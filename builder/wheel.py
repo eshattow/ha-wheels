@@ -26,6 +26,7 @@ _RE_MUSLLINUX_PLATFORM: Final = re.compile(
 _ARCH_PLAT = {
     "amd64": "x86_64",
     "aarch64": "aarch64",
+    "riscv64": "riscv64",
 }
 
 _ALPINE_MUSL_VERSION = {
@@ -36,6 +37,7 @@ _ALPINE_MUSL_VERSION = {
     ("3", "20"): (1, 2),
     ("3", "21"): (1, 2),
     ("3", "22"): (1, 2),
+    ("3", "23"): (1, 2),
 }
 
 
