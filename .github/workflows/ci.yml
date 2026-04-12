@@ -71,11 +71,16 @@ jobs:
       matrix:
         abi: ["cp313", "cp314"]
         tag: ["musllinux_1_2"]
-        arch: ["aarch64", "amd64"]
+        arch: ["riscv64"]
         include:
           - runs-on: ubuntu-latest
-          - arch: aarch64
-            runs-on: ubuntu-24.04-arm
+          - abi: cp313
+            base: 3.13-alpine3.23
+          - abi: cp314
+            base: 3.14-alpine3.23
+
+          - arch: riscv64
+            runs-on: ubuntu-24.04-riscv
 
     steps:
       - name: Check out code from GitHub
@@ -95,6 +100,7 @@ jobs:
           tag: ${{ matrix.tag }}
           arch: ${{ matrix.arch }}
           apk: "mariadb-dev;postgresql-dev;libffi-dev;openssl-dev"
+          wheels-index: "https://ai6fs.net/~hawheels"
           skip-binary: "orjson"
           env-file: True
           test: True
@@ -102,7 +108,7 @@ jobs:
 
   test_local_repo:
     name: Test publishing to a local repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-riscv
 
     steps:
       - name: Check out code from GitHub
@@ -120,7 +126,7 @@ jobs:
         with:
           abi: cp314
           tag: musllinux_1_2
-          arch: amd64
+          arch: riscv64
           apk: "mariadb-dev;postgresql-dev;libffi-dev;openssl-dev"
           skip-binary: "orjson"
           env-file: True
