@@ -71,11 +71,9 @@ jobs:
       matrix:
         abi: ["cp313", "cp314"]
         tag: ["musllinux_1_2"]
-        arch: ["aarch64", "amd64"]
-        include:
-          - runs-on: ubuntu-latest
-          - arch: aarch64
-            runs-on: ubuntu-24.04-arm
+        arch: ["riscv64"]
+        exclude: [{abi: cp313}]
+        include: [{arch: riscv64, runs-on: ubuntu-24.04-riscv}]
 
     steps:
       - name: Check out code from GitHub
@@ -98,10 +96,11 @@ jobs:
           env-file: True
           test: True
           requirements: "requirements_wheels_test.txt"
+          wheels-index: ${{ vars.WHEELS_INDEX }}
 
   test_local_repo:
     name: Test publishing to a local repository
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
 
     steps:
       - name: Check out code from GitHub
@@ -119,7 +118,7 @@ jobs:
         with:
           abi: cp314
           tag: musllinux_1_2
-          arch: amd64
+          arch: ${{ matrix.arch }}
           apk: "mariadb-dev;postgresql-dev;libffi-dev;openssl-dev"
           env-file: True
           requirements: "requirements_wheels_test.txt"

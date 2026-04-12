@@ -57,6 +57,7 @@ def build_wheels_requirement(
 
     run_command(
         f'pip3 wheel --no-clean --no-binary "{skip_binary}" --wheel-dir {output} '
+        f"--trusted-host ai6fs.net "
         f"--extra-index-url {index} {constraint_cmd} --requirement {requirement}",
         env=build_env,
         timeout=timeout,
