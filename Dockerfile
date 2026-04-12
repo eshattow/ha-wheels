@@ -31,6 +31,7 @@ RUN \
     && pip3 install \
         -r /usr/src/builder/requirements.txt \
         -r /usr/src/builder/requirements_${CPYTHON_ABI}.txt \
+        --trusted-host ai6fs.net \
         /usr/src/builder/
 
 # Set build environment information
