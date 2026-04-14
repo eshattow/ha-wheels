@@ -80,15 +80,19 @@ runs:
     - shell: bash
       run: |
         if [[ "${{ inputs.test }}" =~ false|False ]] && [ -z "${{ inputs.local-wheels-repo-path }}" ]; then
+          # No read/write/execute for group and other on new files in this shell
+          umask g-rwx,o-rwx
+
+          # Drop read/write/execute for group and other on existing files
+          chmod -f g-rwx,o-rwx .ssh .ssh/id_rsa .ssh/known_hosts
+
           # Write Key
           mkdir -p .ssh
           echo -e "-----BEGIN RSA PRIVATE KEY-----\n${{ inputs.wheels-key }}\n-----END RSA PRIVATE KEY-----" >> .ssh/id_rsa
-          chmod 600 .ssh/id_rsa
 
           # Validate & update known_hosts
           ssh-keygen -y -e -f .ssh/id_rsa
           ssh-keyscan -H ${{ inputs.wheels-host }} >> .ssh/known_hosts
-          chmod 600 .ssh/*
         fi
 
     - shell: bash
