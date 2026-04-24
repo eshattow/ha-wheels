@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 from functools import cache
+from inspect import stack
 from pathlib import Path
 
 import requests
@@ -43,6 +44,24 @@ def run_command(
     timeout: int | None = None,
 ) -> None:
     """Implement subprocess.run but handle timeout different."""
+    print(
+        f"::group::"
+        f"{Path(*Path(stack()[1].filename).parts[-2:])}:{stack()[1].function}"
+        " => "
+        f"{Path(*Path(stack()[0].filename).parts[-2:])}:{stack()[0].function}"
+        "\n"
+        f"subprocess.run(\n"
+        f"    {cmd},\n"
+        f"    shell={True},\n"
+        f"    check={True},\n"
+        f"    stdout={sys.stdout},\n"
+        f"    stderr={sys.stderr},\n"
+        f"    env={'***' if env else env},\n"
+        f"    timeout={timeout}\n"
+        f")\n"
+        f"::endgroup::\n",
+    )
+
     subprocess.run(  # noqa: S602
         cmd,
         shell=True,
